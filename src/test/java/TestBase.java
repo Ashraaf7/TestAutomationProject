@@ -1,10 +1,17 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
 
+import java.time.Duration;
 import java.util.Set;
 
 public class TestBase {
@@ -23,6 +30,9 @@ public class TestBase {
     By destination = By.id("column-b");
     By WindowHandleButton = By.linkText("Multiple Windows");
     By ClickHere = By.cssSelector("#content [target='_blank']");
+    By Disappear = By.linkText("Disappearing Elements");
+    By Gallery = By.linkText("Gallery");
+    By NotFound = By.xpath("//body /h1");
     @BeforeMethod
     public void Setup()
     {
@@ -53,17 +63,25 @@ public class TestBase {
     @Test
     public  void CheckList()
     {
+        SoftAssert softAssert = new SoftAssert();
         driver.findElement(ChechListButton).click();
         driver.findElement(CheckBox2).click();
-        System.out.println( driver.findElement(CheckBox2).isSelected());
+       boolean actual =  driver.findElement(CheckBox2).isSelected();
+     //Hard Assertion
+       Assert.assertEquals(actual,true);
+       //Soft Assertion
+        softAssert.assertEquals(actual,false);
+       softAssert.assertAll();
+
     }
 
     @Test
     public void RightClick ()
     {
+        WebElement RectangleElement= driver.findElement(Rectangle);
         driver.findElement(ContextMenu).click();
         Actions actions = new Actions(driver);
-        actions.contextClick(driver.findElement(Rectangle)).perform();;
+        actions.contextClick(RectangleElement).perform();;
     }
 
     @Test
@@ -101,12 +119,24 @@ public class TestBase {
 
 
     }
-
+    @Test
+    public void Wait ()
+    {
+        driver.findElement(Disappear).click();
+        driver.navigate().refresh();
+        //implicitlyWait
+       // driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        //Explicity Wait
+        new WebDriverWait(driver,Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(Gallery));
+        driver.findElement(Gallery).click();
+        String Not = driver.findElement(NotFound).getText();
+        Assert.assertEquals( Not ,"Not Found");
+    }
 
     @AfterMethod
     public void Close()
     {
-      // driver.quit();
+       driver.quit();
     }
 
 }
