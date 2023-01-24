@@ -1,9 +1,7 @@
-import org.checkerframework.checker.units.qual.C;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.*;
 
@@ -16,6 +14,11 @@ public class TestBase {
     By DropDownList = By.xpath("//select[@id='dropdown']");
     By ChechListButton = By.linkText("Checkboxes");
     By CheckBox2 = By.xpath("(//input[@type='checkbox'])[2]");
+    By ContextMenu = By.linkText("Context Menu");
+    By Rectangle = By.id("hot-spot");
+    By DragDrop = By.linkText("Drag and Drop");
+    By Source = By.id("column-a");
+    By destination = By.id("column-b");
     @BeforeMethod
     public void Setup()
     {
@@ -51,6 +54,30 @@ public class TestBase {
         System.out.println( driver.findElement(CheckBox2).isSelected());
     }
 
+    @Test
+    public void RightClick ()
+    {
+        driver.findElement(ContextMenu).click();
+        Actions actions = new Actions(driver);
+        actions.contextClick(driver.findElement(Rectangle)).perform();;
+    }
+
+    @Test
+    public void DragDrop() throws InterruptedException {
+        driver.findElement(DragDrop).click();
+        Actions actions = new Actions(driver);
+        actions.dragAndDrop(driver.findElement(Source),driver.findElement(destination)).perform();
+        Thread.sleep(2000);
+    }
+    @Test
+    public void ClickHold() throws InterruptedException {
+        driver.findElement(DragDrop).click();
+        Actions actions = new Actions(driver);
+        actions.clickAndHold(driver.findElement(Source))
+                .moveToElement(driver.findElement(destination))
+                .release().build().perform();
+       // Thread.sleep(2000);
+    }
     @AfterMethod
     public void Close()
     {
