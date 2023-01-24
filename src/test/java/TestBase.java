@@ -14,6 +14,8 @@ public class TestBase {
     By Email = By.id("email");
     By DropDownButton = By.linkText("Dropdown");
     By DropDownList = By.xpath("//select[@id='dropdown']");
+    By ChechListButton = By.linkText("Checkboxes");
+    By CheckBox2 = By.xpath("(//input[@type='checkbox'])[2]");
     @BeforeMethod
     public void Setup()
     {
@@ -40,6 +42,13 @@ public class TestBase {
         Thread.sleep(3000);
         select.selectByVisibleText("Option 1");
         Thread.sleep(3000);
+    }
+    @Test
+    public  void CheckList()
+    {
+        driver.findElement(ChechListButton).click();
+        driver.findElement(CheckBox2).click();
+        System.out.println( driver.findElement(CheckBox2).isSelected());
     }
 
     @AfterMethod
