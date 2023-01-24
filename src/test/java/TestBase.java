@@ -4,6 +4,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.*;
 
 public class TestBase {
@@ -11,7 +12,9 @@ public class TestBase {
     By forgotPassword = By.linkText("Forgot Password");
     By retrievePassword = By.id("form_submit");
     By Email = By.id("email");
-    @BeforeTest
+    By DropDownButton = By.linkText("Dropdown");
+    By DropDownList = By.xpath("//select[@id='dropdown']");
+    @BeforeMethod
     public void Setup()
     {
         driver = new EdgeDriver();
@@ -25,9 +28,21 @@ public class TestBase {
         driver.findElement(Email).sendKeys("ahmedashraf09@gmail.com");
         Thread.sleep(3000);
         driver.findElement(retrievePassword).click();
+        driver.navigate().back();
+        driver.navigate().back();
     }
 
-    @AfterTest
+    @Test
+    public void DropDown() throws InterruptedException {
+        driver.findElement(DropDownButton).click();
+        Thread.sleep(3000);
+        Select select = new Select(driver.findElement(DropDownList));
+        Thread.sleep(3000);
+        select.selectByVisibleText("Option 1");
+        Thread.sleep(3000);
+    }
+
+    @AfterMethod
     public void Close()
     {
       // driver.quit();
