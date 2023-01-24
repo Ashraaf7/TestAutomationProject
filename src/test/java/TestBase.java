@@ -5,6 +5,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.*;
 
+import java.util.Set;
+
 public class TestBase {
     private WebDriver driver;
     By forgotPassword = By.linkText("Forgot Password");
@@ -19,6 +21,8 @@ public class TestBase {
     By DragDrop = By.linkText("Drag and Drop");
     By Source = By.id("column-a");
     By destination = By.id("column-b");
+    By WindowHandleButton = By.linkText("Multiple Windows");
+    By ClickHere = By.cssSelector("#content [target='_blank']");
     @BeforeMethod
     public void Setup()
     {
@@ -73,11 +77,32 @@ public class TestBase {
     public void ClickHold() throws InterruptedException {
         driver.findElement(DragDrop).click();
         Actions actions = new Actions(driver);
-        actions.clickAndHold(driver.findElement(Source))
-                .moveToElement(driver.findElement(destination))
+        actions.clickAndHold(driver.findElement(destination))
+                .moveToElement(driver.findElement(Source))
                 .release().build().perform();
        // Thread.sleep(2000);
     }
+
+    @Test
+    public void MultipleWindows() throws InterruptedException {
+        driver.findElement(WindowHandleButton).click();
+        String CurrentPage =driver.getWindowHandle();
+        Thread.sleep(2000);
+        driver.findElement(ClickHere).click();
+        Thread.sleep(2000);
+        System.out.println(CurrentPage);
+        driver.switchTo().window(CurrentPage);
+        Set<String> Handles = driver.getWindowHandles();
+        for (String s : Handles)
+        {
+            if(s != CurrentPage)
+            driver.switchTo().window(s);
+        }
+
+
+    }
+
+
     @AfterMethod
     public void Close()
     {
